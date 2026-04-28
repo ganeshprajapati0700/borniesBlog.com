@@ -6,6 +6,155 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    --color-admin-sidebar: #0f172a;
+    --color-admin-sidebar-hover: #1e293b;
+}
+
+/* --- Admin UI Components --- */
+
+.admin-wrapper {
+    @apply flex h-screen bg-[#f8fafc] text-slate-800 font-sans overflow-hidden antialiased;
+}
+
+.admin-sidebar {
+    @apply w-64 bg-slate-900 text-slate-100 flex flex-col transition-all duration-300 shadow-2xl relative z-20;
+}
+
+.admin-sidebar-header {
+    @apply h-[72px] flex items-center px-6 border-b border-slate-700/50 font-extrabold text-xl tracking-wide;
+    background: linear-gradient(145deg, theme('colors.slate.900'), theme('colors.slate.800'));
+}
+
+.admin-sidebar-header span {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-cyan-400;
+}
+
+.admin-nav {
+    @apply flex-1 overflow-y-auto py-6 px-4 flex flex-col gap-2;
+}
+
+.admin-nav-link {
+    @apply flex items-center px-4 py-3 text-slate-300 rounded-xl transition-all duration-300 hover:bg-indigo-600/10 hover:text-indigo-300 hover:translate-x-1;
+}
+
+.admin-nav-link.active {
+    @apply bg-indigo-600 text-white shadow-lg shadow-indigo-600/30 font-medium;
+}
+
+.admin-nav-icon {
+    @apply mr-3 w-5 h-5 transition-transform duration-300;
+}
+
+.admin-nav-link:hover .admin-nav-icon {
+    @apply scale-110;
+}
+
+.admin-main {
+    @apply flex-1 flex flex-col relative overflow-y-auto overflow-x-hidden;
+}
+
+.admin-topbar {
+    @apply h-[72px] bg-white/70 backdrop-blur-xl border-b border-slate-200/60 flex items-center justify-between px-8 sticky top-0 z-10 shadow-sm;
+}
+
+.admin-topbar-title {
+    @apply text-lg font-semibold text-slate-800;
+}
+
+.admin-user-badge {
+    @apply flex items-center gap-3 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-full pl-4 pr-1.5 py-1.5 shadow-sm hover:shadow-md transition-shadow cursor-pointer;
+}
+
+.admin-user-avatar {
+    @apply w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 font-bold flex items-center justify-center border border-indigo-200;
+}
+
+.admin-content {
+    @apply p-8 lg:p-10 animate-fade-in;
+}
+
+.admin-page-title {
+    @apply text-3xl font-bold text-slate-800 mb-8 tracking-tight;
+}
+
+.admin-stats-grid {
+    @apply grid grid-cols-1 md:grid-cols-3 gap-6 mb-10;
+}
+
+.admin-stat-card {
+    @apply bg-white rounded-2xl p-6 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-slate-100 relative overflow-hidden transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.1)] hover:-translate-y-1 group;
+}
+
+.admin-stat-card::before {
+    content: '';
+    @apply absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r transition-all duration-500 opacity-80 group-hover:opacity-100;
+}
+
+.admin-stat-card.color-indigo::before {
+    @apply from-indigo-500 to-blue-500;
+}
+
+.admin-stat-card.color-emerald::before {
+    @apply from-emerald-400 to-teal-500;
+}
+
+.admin-stat-card.color-purple::before {
+    @apply from-purple-500 to-fuchsia-500;
+}
+
+.admin-stat-title {
+    @apply text-sm font-semibold text-slate-400 uppercase tracking-wider mb-2 flex items-center justify-between;
+}
+
+.admin-stat-value {
+    @apply text-4xl font-extrabold text-slate-800;
+}
+
+.admin-stat-icon-wrapper {
+    @apply w-10 h-10 rounded-full flex items-center justify-center opacity-20 group-hover:opacity-100 transition-opacity duration-300;
+}
+
+.admin-stat-card.color-indigo .admin-stat-icon-wrapper {
+    @apply bg-indigo-100 text-indigo-600;
+}
+
+.admin-stat-card.color-emerald .admin-stat-icon-wrapper {
+    @apply bg-emerald-100 text-emerald-600;
+}
+
+.admin-stat-card.color-purple .admin-stat-icon-wrapper {
+    @apply bg-purple-100 text-purple-600;
+}
+
+.btn-logout {
+    @apply mt-auto mx-4 mb-6 flex justify-center items-center gap-2 px-4 py-3 text-sm font-medium text-red-400 bg-red-400/10 rounded-xl hover:bg-red-500 hover:text-white transition-all duration-300 border border-red-500/20 hover:border-red-500 hover:shadow-lg hover:shadow-red-500/20;
+}
+
+/* Alerts */
+.admin-alert {
+    @apply mb-6 p-4 rounded-xl flex items-center gap-3 border shadow-sm animate-slide-in;
+}
+
+.admin-alert-success {
+    @apply bg-emerald-50 text-emerald-800 border-emerald-200;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(-15px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-in {
+    animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

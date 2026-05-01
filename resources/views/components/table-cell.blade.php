@@ -1,6 +1,12 @@
-@props(['type' => 'text'])
+@props(['type' => 'text', 'id' => null, 'name' => 'ids[]', 'value' => null])
 
 @switch($type)
+    @case('checkbox')
+        <td class="px-4 md:px-6 py-4">
+            <input type="checkbox" name="{{ $name }}" value="{{ $value }}" class="row-checkbox w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500">
+        </td>
+        @break
+
     @case('id')
         <td class="px-4 md:px-6 py-4 text-sm text-slate-600">
             <span class="font-mono text-xs bg-slate-100 text-slate-700 px-2 py-1 rounded-md font-medium">{{ $slot }}</span>

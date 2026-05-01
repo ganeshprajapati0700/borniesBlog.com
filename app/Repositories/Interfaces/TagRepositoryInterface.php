@@ -4,11 +4,11 @@ namespace App\Repositories\Interfaces;
 
 interface TagRepositoryInterface
 {
-    public function paginateTags(array $filters, int $perPage = 15);
+    public function paginate(array $filters, int $perPage = 15);
 
-    public function createTag(array $data);
+    public function create(array $data);
 
-    public function findTagById(string $id);
+    public function findById(string $id);
 
     public function update(string $id, array $data);
 

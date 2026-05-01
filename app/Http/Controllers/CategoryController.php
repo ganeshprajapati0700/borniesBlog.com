@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CategoryFormRequest;
+use App\Models\Category;
 use App\Services\Interfaces\CategoryServiceInterface;
 use Illuminate\Http\Request;
 
@@ -72,5 +73,71 @@ class CategoryController extends Controller
         $this->categoryService->deleteCategory($id);
 
         return redirect()->route('categories.index')->with('success', 'Category deleted successfully.');
+    }
+
+    /** Toggle category status via AJAX. */
+    public function toggleStatus(string $id)
+    {
+        $category = Category::findOrFail($id);
+        if (auth()->user()->is_admin) {
+            $category->status = $category->status == 1 ? 0 : 1;
+            $category->save();
+
+            return response()->json(['status' => $category->status]);
+        }
+
+        return response()->json(['error' => 'Unauthorized'], 403);
+    }
+
+    /** Handle bulk actions for categories */
+    public function bulkAction(Request $request)
+    {
+        if (! auth()->user()->is_admin) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        }
+
+        $action = $request->action;
+        $ids = $request->ids;
+
+        if (empty($ids)) {
+            return response()->json(['success' => false, 'message' => 'No items selected.']);
+        }
+
+        switch ($action) {
+            case 'delete':
+                $this->categoryService->bulkDeleteCategories($ids);
+                $message = 'Selected categories deleted.';
+                break;
+            case 'publish':
+                $this->categoryService->bulkUpdateStatus($ids, 1);
+                $message = 'Selected categories activated.';
+                break;
+            case 'draft':
+                $this->categoryService->bulkUpdateStatus($ids, 0);
+                $message = 'Selected categories deactivated.';
+                break;
+            default:
+                return response()->json(['success' => false, 'message' => 'Invalid action.']);
+        }
+
+        return response()->json(['success' => true, 'message' => $message]);
+    }
+
+    /** Quick Update (AJAX) for categories */
+    public function quickUpdate(Request $request, $id)
+    {
+        if (! auth()->user()->is_admin) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        }
+
+        $data = $request->only(['name', 'status']);
+
+        if (isset($data['name']) && empty($data['name'])) {
+            return response()->json(['success' => false, 'message' => 'Name cannot be empty.']);
+        }
+
+        $this->categoryService->updateCategory($id, $data);
+
+        return response()->json(['success' => true, 'message' => 'Category updated.']);
     }
 }

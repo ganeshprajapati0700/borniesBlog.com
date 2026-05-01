@@ -47,4 +47,14 @@ class CategoryRepository implements CategoryRepositoryInterface
 
         return $category->delete();
     }
+
+    public function bulkDelete(array $ids)
+    {
+        return Category::whereIn('id', $ids)->delete();
+    }
+
+    public function bulkUpdateStatus(array $ids, int $status)
+    {
+        return Category::whereIn('id', $ids)->update(['status' => $status]);
+    }
 }

@@ -10,11 +10,6 @@
     {{-- header start here --}}
     <x-page-header title="Create New Category" subtitle="Add a new category to organize your posts"
         buttonLabel="Back to Categories" buttonUrl="{{ route('categories.index') }}" />
-    {{-- @if (session('success'))
-    <div class="mb-4 px-4 py-3 bg-green-100 border border-green-400 text-green-700 rounded">
-        {{ session('success') }}
-    </div>
-    @endif --}}
     @if ($errors->any())
         <div class="mb-4 px-4 py-3 bg-red-100 border border-red-400 text-red-700 rounded">
             <ul class="list-disc list-inside">

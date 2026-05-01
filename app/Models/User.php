@@ -3,7 +3,6 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Notifications\CustomVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -22,6 +21,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'mobile',
         'password',
         'status',
         'is_admin',
@@ -60,8 +60,4 @@ class User extends Authenticatable
      *
      * @return void
      */
-    // public function sendEmailVerificationNotification()
-    // {
-    //     $this->notify(new CustomVerifyEmail);
-    // }
 }

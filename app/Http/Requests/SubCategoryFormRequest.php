@@ -23,7 +23,7 @@ class SubCategoryFormRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255|unique:sub_categories,name',
+            'name' => 'required|string|max:255|unique:sub_categories,name,'.$this->route('subcategory'),
             'category_id' => 'required|exists:categories,id',
             'status' => 'required|in:1,0',
         ];

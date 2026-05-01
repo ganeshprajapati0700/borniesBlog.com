@@ -13,4 +13,8 @@ interface CategoryRepositoryInterface
     public function update(string $id, array $data);
 
     public function delete(string $id);
+
+    public function bulkDelete(array $ids);
+
+    public function bulkUpdateStatus(array $ids, int $status);
 }

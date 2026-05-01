@@ -2,15 +2,14 @@
 
 namespace App\Repositories\Eloquent;
 
-use App\Models\Category;
+use App\Models\Tag;
 use App\Repositories\Interfaces\TagRepositoryInterface;
-use Illuminate\Container\Attributes\Tag;
 
 class TagRepository implements TagRepositoryInterface
 {
-    public function paginateTags(array $filters, int $perPage = 15)
+    public function paginate(array $filters, int $perPage = 15)
     {
-        return Category::query()
+        return Tag::query()
             ->when(isset($filters['search']) && $filters['search'] !== '', function ($query) use ($filters) {
                 $search = $filters['search'];
                 $query->where('name', 'like', "%{$search}%")
@@ -24,28 +23,28 @@ class TagRepository implements TagRepositoryInterface
             ->withQueryString();
     }
 
-    public function createTag(array $data)
+    public function create(array $data)
     {
         return Tag::create($data);
     }
 
-    public function findTagById(string $id)
+    public function findById(string $id)
     {
         return Tag::findOrFail($id);
     }
 
     public function update(string $id, array $data)
     {
-        $category = Tag::findOrFail($id);
-        $category->update($data);
+        $tag = Tag::findOrFail($id);
+        $tag->update($data);
 
-        return $category;
+        return $tag;
     }
 
     public function delete(string $id)
     {
-        $category = Tag::findOrFail($id);
+        $tag = Tag::findOrFail($id);
 
-        return $category->delete();
+        return $tag->delete();
     }
 }

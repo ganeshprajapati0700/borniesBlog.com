@@ -1,22 +1,182 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
 @theme {
     --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
 }
 
-/* Animations */
+/* ===================== Animations ===================== */
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(15px); }
-    to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes slideIn {
-    from { opacity: 0; transform: translateX(-15px); }
-    to { opacity: 1; transform: translateX(0); }
+@keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-100%); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeInOverlay {
+    from { opacity: 0; }
+    to   { opacity: 1; }
 }
 
 .animate-fade-in {
-    animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: fadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .animate-slide-in {
-    animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: slideInLeft 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ===================== Sidebar Core ===================== */
+#sidebar-container {
+    width: 260px;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+}
+
+#sidebar-container.sidebar-collapsed {
+    width: 64px;
+}
+
+/* ===================== Sidebar Scrollbar ===================== */
+#sidebar-container nav::-webkit-scrollbar {
+    width: 3px;
+}
+#sidebar-container nav::-webkit-scrollbar-track {
+    background: transparent;
+}
+#sidebar-container nav::-webkit-scrollbar-thumb {
+    background: rgba(99, 102, 241, 0.3);
+    border-radius: 99px;
+}
+#sidebar-container nav::-webkit-scrollbar-thumb:hover {
+    background: rgba(99, 102, 241, 0.6);
+}
+
+/* ===================== Mobile Sidebar Drawer ===================== */
+#sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(2px);
+    z-index: 40;
+    animation: fadeInOverlay 0.25s ease forwards;
+}
+
+#sidebar-overlay.active {
+    display: block;
+}
+
+#sidebar-container.mobile-open {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    height: 100dvh;
+    width: 260px !important;
+    z-index: 50;
+    display: flex !important;
+    animation: slideInLeft 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    box-shadow: 8px 0 40px rgba(0, 0, 0, 0.4);
+}
+
+/* ===================== Collapse: hide text labels ===================== */
+#sidebar-container.sidebar-collapsed .sidebar-label,
+#sidebar-container.sidebar-collapsed .sidebar-section-label,
+#sidebar-container.sidebar-collapsed .sidebar-brand-text,
+#sidebar-container.sidebar-collapsed .sidebar-user-info,
+#sidebar-container.sidebar-collapsed .sidebar-logout-text {
+    opacity: 0;
+    width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    transition: opacity 0.2s ease, width 0.2s ease;
+}
+
+/* Expanded state - labels visible */
+#sidebar-container .sidebar-label,
+#sidebar-container .sidebar-section-label,
+#sidebar-container .sidebar-brand-text,
+#sidebar-container .sidebar-user-info,
+#sidebar-container .sidebar-logout-text {
+    opacity: 1;
+    transition: opacity 0.2s ease 0.05s;
+}
+
+/* ===================== Collapse: center icon wrappers ===================== */
+#sidebar-container.sidebar-collapsed .sidebar-nav-link {
+    justify-content: center;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+#sidebar-container.sidebar-collapsed .sidebar-icon-wrap {
+    margin: 0 auto;
+}
+
+#sidebar-container.sidebar-collapsed .sidebar-brand-wrap {
+    justify-content: center;
+    padding: 0;
+}
+
+#sidebar-container.sidebar-collapsed .sidebar-logout-btn {
+    justify-content: center;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+#sidebar-container.sidebar-collapsed .sidebar-user-row {
+    display: none;
+}
+
+/* ===================== Active sidebar link left-bar ===================== */
+.sidebar-link-active {
+    position: relative;
+}
+.sidebar-link-active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 60%;
+    background: linear-gradient(180deg, #6366f1, #818cf8);
+    border-radius: 0 4px 4px 0;
+}
+
+/* ===================== Tooltip for collapsed sidebar ===================== */
+#sidebar-container.sidebar-collapsed .sidebar-nav-link {
+    position: relative;
+}
+
+#sidebar-container.sidebar-collapsed .sidebar-nav-link:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: calc(100% + 8px);
+    top: 50%;
+    transform: translateY(-50%);
+    background: #1e293b;
+    color: #e2e8f0;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    z-index: 100;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    pointer-events: none;
+}
+
+/* ===================== Nav section label ===================== */
+.nav-section-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(148, 163, 184, 0.45);
+    padding: 0 1rem;
+    margin-top: 1.25rem;
+    margin-bottom: 0.25rem;
 }

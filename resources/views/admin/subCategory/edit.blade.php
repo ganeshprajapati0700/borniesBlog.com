@@ -39,7 +39,7 @@
             <div>
                 <button type="submit"
                     class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition shadow-sm">
-                    Update Category
+                    Update Sub Category
                 </button>
             </div>
         </form>

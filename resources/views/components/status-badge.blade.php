@@ -13,9 +13,26 @@
             'text' => 'text-red-700',
             'dot' => 'bg-red-500',
             'label' => 'Inactive'
+        ],
+        'Published' => [
+            'bg' => 'bg-blue-50 border-blue-200',
+            'text' => 'text-blue-700',
+            'dot' => 'bg-blue-500',
+            'label' => 'Published'
+        ],
+        'Draft' => [
+            'bg' => 'bg-amber-50 border-amber-200',
+            'text' => 'text-amber-700',
+            'dot' => 'bg-amber-500',
+            'label' => 'Draft'
         ]
     ];
-    $statusText = $status == 1 ? 'Active' : 'Inactive';
+
+    if (is_numeric($status)) {
+        $statusText = $status == 1 ? 'Active' : 'Inactive';
+    } else {
+        $statusText = ucfirst($status);
+    }
 
     $config = $statusConfig[$statusText] ?? $statusConfig['Inactive'];
 @endphp

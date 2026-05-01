@@ -1,0 +1,323 @@
+@extends('admin.layouts.app')
+@section('page-title', 'Edit Post')
+@section('content')
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+        .select2-container .select2-selection--multiple {
+            min-height: 42px;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.5rem;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            background-color: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.25rem;
+            padding: 2px 8px;
+            color: #334155;
+            margin-top: 6px;
+        }
+    </style>
+
+    <x-breadcrumb :items="[
+            ['label' => 'Dashboard', 'url' => route('admin.dashboard')],
+            ['label' => 'Posts', 'url' => route('posts.index')],
+            ['label' => 'Edit Post']
+        ]">
+    </x-breadcrumb>
+    <x-page-header title="Edit Post" subtitle="Edit a post to organize your posts" buttonLabel="Back to Posts"
+        buttonUrl="{{ route('posts.index') }}" />
+    @if ($errors->any())
+        <div class="mb-4 px-4 py-3 bg-red-100 border border-red-400 text-red-700 rounded">
+            <ul class="list-disc list-inside">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+    {{-- header end here --}}
+    {{-- form start here --}}
+    <div class="bg-white rounded-lg shadow p-6">
+        <form action="{{ route('posts.update', $post->id) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+            @csrf
+            @method('PATCH')
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Authors -->
+                <x-select-field label="Author" name="user_id" :options="['' => 'Select Author'] + $authors->pluck('name', 'id')->toArray()" value="{{ old('user_id', $post->user_id) }}" required />
+
+                <!-- Category -->
+                <x-select-field label="Category" name="category_id" :options="['' => 'Select Category'] + $categories->pluck('name', 'id')->toArray()" value="{{ old('category_id', $post->category_id) }}"
+                    required />
+
+                <!-- Subcategory (AJAX populated) -->
+                <div>
+                    <label for="sub_category_id" class="block text-sm font-medium text-slate-700 mb-2">Sub Category</label>
+                    <select name="sub_category_id" id="sub_category_id"
+                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors">
+                        <option value="">Select Subcategory</option>
+                    </select>
+                    @error('sub_category_id')
+                        <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Tags (Multiple) -->
+                <div>
+                    <label for="tags" class="block text-sm font-medium text-slate-700 mb-2">Tags</label>
+                    <select name="tags[]" id="tags" multiple
+                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors h-32">
+                        @foreach($tags as $tag)
+                            <option value="{{ $tag->id }}" {{ (is_array(old('tags', $assignedTagIds)) && in_array($tag->id, old('tags', $assignedTagIds))) ? 'selected' : '' }}>
+                                {{ $tag->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <p class="text-xs text-slate-500 mt-1">Hold Ctrl (Windows) or Command (Mac) to select multiple</p>
+                    @error('tags')
+                        <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Type -->
+                <x-select-field label="Type" name="type" :options="['' => 'Select Type', 'news' => 'News', 'article' => 'Article', 'interview' => 'Interview']" value="{{ old('type', $post->type) }}" required />
+            </div>
+
+            <x-input-field label="Title" name="title" placeholder="Enter Title" value="{{ old('title', $post->title) }}"
+                required />
+
+            <div>
+                <label for="shortDesc" class="block text-sm font-medium text-slate-700 mb-2">Short Description
+                    (Subtitle)</label>
+                <textarea name="shortDesc" id="shortDesc" rows="3"
+                    class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+                    placeholder="Enter short description">{{ old('shortDesc', $post->shortDesc) }}</textarea>
+                <div class="flex justify-between mt-1">
+                    <p class="text-xs text-slate-500">Brief summary of your post.</p>
+                    <p id="shortDesc_count" class="text-xs font-medium text-slate-500">0 / 225 characters</p>
+                </div>
+                @error('shortDesc')
+                    <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label for="description" class="block text-sm font-medium text-slate-700 mb-2">Description <span
+                        class="text-xs text-slate-500 font-normal">(Max 3000 words)</span></label>
+                <textarea name="description" id="description" rows="5"
+                    class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors">{{ old('description', $post->description) }}</textarea>
+                @error('description')
+                    <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label for="image_path" class="block text-sm font-medium text-slate-700 mb-2">Cover Image</label>
+
+                <div id="image_preview_container" class="mb-4" style="display: {{ $post->image_path ? 'block' : 'none' }};">
+                    <img id="image_preview" src="{{ $post->image_path ? Storage::url($post->image_path) : '' }}"
+                        alt="Cover Image Preview" class="h-48 w-auto rounded-lg shadow-sm border border-slate-200"
+                        style="display: {{ $post->image_path ? 'block' : 'none' }};">
+                    <p id="image_info" class="text-xs text-slate-500 mt-2 font-mono"></p>
+                </div>
+
+                <input type="file" name="image_path" id="image_path" accept="image/*"
+                    class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors">
+                @error('image_path')
+                    <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <x-select-field label="Status" name="status" :options="[0 => 'Draft', 1 => 'Published']"
+                value="{{ old('status', $post->status) }}" required />
+
+            <div>
+                <button type="submit"
+                    class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition shadow-sm">
+                    Update Post
+                </button>
+            </div>
+        </form>
+    </div>
+
+    @push('scripts')
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.3/tinymce.min.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                // Initialize Select2
+                $('#tags').select2({
+                    placeholder: "Select tags...",
+                    allowClear: true,
+                    width: '100%'
+                });
+
+                // Initialize TinyMCE
+                tinymce.init({
+                    selector: '#description',
+                    height: 500,
+                    menubar: false,
+                    plugins: [
+                        'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                        'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+                    ],
+                    toolbar: 'undo redo | blocks | ' +
+                        'bold italic forecolor | alignleft aligncenter ' +
+                        'alignright alignjustify | bullist numlist outdent indent | ' +
+                        'removeformat | image | help',
+                    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
+                    setup: function (editor) {
+                        const maxWords = 3000;
+                        editor.on('keydown', function (e) {
+                            // allowed keys: backspace, delete, arrows
+                            const allowedKeys = [8, 46, 37, 38, 39, 40];
+                            if (allowedKeys.includes(e.keyCode)) return;
+
+                            const wordCount = editor.plugins.wordcount ? editor.plugins.wordcount.body.getWordCount() : 0;
+                            if (wordCount >= maxWords) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                return false;
+                            }
+                        });
+
+                        editor.on('paste', function (e) {
+                            const wordCount = editor.plugins.wordcount ? editor.plugins.wordcount.body.getWordCount() : 0;
+                            if (wordCount >= maxWords) {
+                                e.preventDefault();
+                            }
+                        });
+                    },
+                    file_picker_callback: function (cb, value, meta) {
+                        var x = window.innerWidth || document.documentElement.clientWidth || document.getElementsByTagName('body')[0].clientWidth;
+                        var y = window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('body')[0].clientHeight;
+
+                        var cmsURL = '/admin/laravel-filemanager?editor=' + meta.fieldname;
+                        if (meta.filetype == 'image') {
+                            cmsURL = cmsURL + "&type=Images";
+                        } else {
+                            cmsURL = cmsURL + "&type=Files";
+                        }
+
+                        tinyMCE.activeEditor.windowManager.openUrl({
+                            url: cmsURL,
+                            title: 'Filemanager',
+                            width: x * 0.8,
+                            height: y * 0.8,
+                            resizable: "yes",
+                            close_previous: "no",
+                            onMessage: (api, message) => {
+                                cb(message.content);
+                            }
+                        });
+                    }
+                });
+
+                // Image Preview Logic
+                const imageInput = document.getElementById('image_path');
+                const previewContainer = document.getElementById('image_preview_container');
+                const previewImage = document.getElementById('image_preview');
+                const imageInfo = document.getElementById('image_info');
+
+                if (imageInput) {
+                    imageInput.addEventListener('change', function () {
+                        const file = this.files[0];
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.onload = function (e) {
+                                previewImage.src = e.target.result;
+                                previewImage.style.display = 'block';
+                                previewContainer.style.display = 'block';
+
+                                // Show file info
+                                const sizeKB = (file.size / 1024).toFixed(2);
+                                const date = new Date(file.lastModified);
+                                imageInfo.textContent = `Name: ${file.name} | Size: ${sizeKB} KB | Created: ${date.toLocaleString()}`;
+                            }
+                            reader.readAsDataURL(file);
+                        } else {
+                            @if($post->image_path)
+                                previewImage.src = "{{ Storage::url($post->image_path) }}";
+                                previewImage.style.display = 'block';
+                                previewContainer.style.display = 'block';
+                            @else
+                                previewImage.src = '';
+                                previewImage.style.display = 'none';
+                                previewContainer.style.display = 'none';
+                            @endif
+                            imageInfo.textContent = '';
+                        }
+                    });
+                }
+
+                // Short Description Character Count Logic
+                const shortDescInput = document.getElementById('shortDesc');
+                const shortDescCount = document.getElementById('shortDesc_count');
+                const maxChars = 225;
+
+                if (shortDescInput) {
+                    shortDescInput.addEventListener('input', function () {
+                        let text = this.value;
+                        let charCount = text.length;
+
+                        if (charCount > maxChars) {
+                            // Truncate to maxChars
+                            this.value = text.substring(0, maxChars);
+                            charCount = maxChars;
+                        }
+
+                        shortDescCount.textContent = `${charCount} / ${maxChars} characters`;
+                        if (charCount >= maxChars) {
+                            shortDescCount.classList.remove('text-slate-500');
+                            shortDescCount.classList.add('text-red-500');
+                        } else {
+                            shortDescCount.classList.remove('text-red-500');
+                            shortDescCount.classList.add('text-slate-500');
+                        }
+                    });
+
+                    // Trigger once on load for old data
+                    shortDescInput.dispatchEvent(new Event('input'));
+                }
+
+                // Subcategory AJAX logic
+                const categorySelect = document.querySelector('select[name="category_id"]');
+                const subCategorySelect = document.getElementById('sub_category_id');
+                const oldSubCategoryId = "{{ old('sub_category_id', $post->sub_category_id) }}";
+
+                function loadSubcategories(categoryId, selectedId = null) {
+                    subCategorySelect.innerHTML = '<option value="">Select Subcategory</option>';
+
+                    if (categoryId) {
+                        fetch(`{{ route('subcategories.by_category') }}?category_id=${categoryId}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                data.forEach(sub => {
+                                    const option = document.createElement('option');
+                                    option.value = sub.id;
+                                    option.textContent = sub.name;
+                                    if (selectedId && sub.id == selectedId) {
+                                        option.selected = true;
+                                    }
+                                    subCategorySelect.appendChild(option);
+                                });
+                            })
+                            .catch(error => console.error('Error fetching subcategories:', error));
+                    }
+                }
+
+                if (categorySelect) {
+                    categorySelect.addEventListener('change', function () {
+                        loadSubcategories(this.value);
+                    });
+
+                    // Trigger on load if there's a selected category
+                    if (categorySelect.value) {
+                        loadSubcategories(categorySelect.value, oldSubCategoryId);
+                    }
+                }
+            });
+        </script>
+    @endpush
+@endsection

@@ -13,4 +13,8 @@ interface CategoryServiceInterface
     public function updateCategory(string $id, array $data);
 
     public function deleteCategory(string $id);
+
+    public function bulkDeleteCategories(array $ids);
+
+    public function bulkUpdateStatus(array $ids, int $status);
 }

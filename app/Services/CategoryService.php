@@ -47,4 +47,14 @@ class CategoryService implements CategoryServiceInterface
     {
         return $this->categoryRepo->delete($id);
     }
+
+    public function bulkDeleteCategories(array $ids)
+    {
+        return $this->categoryRepo->bulkDelete($ids);
+    }
+
+    public function bulkUpdateStatus(array $ids, int $status)
+    {
+        return $this->categoryRepo->bulkUpdateStatus($ids, $status);
+    }
 }

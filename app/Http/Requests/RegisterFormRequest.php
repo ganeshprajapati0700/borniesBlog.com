@@ -25,8 +25,24 @@ class RegisterFormRequest extends FormRequest
         return [
             'name' => 'required|min:3|max:50',
             'email' => 'required|email|unique:users',
-            'password' => 'required|confirmed|min:6',
-            'password_confirmation' => 'required|same:password|min:6',
+            'password' => [
+                'required',
+                'min:10',             // must be at least 10 characters in length
+                'regex:/[a-z]/',      // must contain at least one lowercase letter
+                'regex:/[A-Z]/',      // must contain at least one uppercase letter
+                'regex:/[0-9]/',      // must contain at least one digit
+                'regex:/[@$!%*#?&]/', // must contain a special character
+                'confirmed',
+            ],
+            'password_confirmation' => [
+                'required',
+                'min:10',
+                'regex:/[a-z]/',
+                'regex:/[A-Z]/',
+                'regex:/[0-9]/',
+                'regex:/[@$!%*#?&]/',
+                'same:password',
+            ],
         ];
     }
 

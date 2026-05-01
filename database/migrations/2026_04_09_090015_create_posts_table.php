@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('category_id')->constrained()->cascadeOnDelete();
             $table->foreignId('sub_category_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('tag_id')->constrained()->cascadeOnDelete();
             $table->enum('type', ['news', 'article', 'interview']);
             $table->string('title')->unique();
             $table->string('slug')->unique();
@@ -24,7 +23,7 @@ return new class extends Migration
             $table->text('shortDesc')->nullable();
             $table->longText('description')->nullable();
             $table->string('image_path')->nullable();
-            $table->enum('status', ['draft', 'published'])->default('draft');
+            $table->enum('status', [0, 1])->default(0);
             $table->timestamp('published_at')->nullable();
             $table->timestamps();
         });

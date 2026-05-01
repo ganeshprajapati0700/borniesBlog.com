@@ -5,11 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UserFormRequest;
 use App\Models\User;
 use App\Services\Interfaces\UserServiceInterface;
+use App\Traits\LogsActivity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    use LogsActivity;
+
     protected $userService;
 
     public function __construct(UserServiceInterface $userService)
@@ -43,7 +46,9 @@ class UserController extends Controller
     {
         // dd($request->all());
         $data = $request->validated();
-        $this->userService->create($data);
+        $user = $this->userService->create($data);
+
+        $this->logActivity('created', 'User', $user->id, "Created user \"{$user->name}\"");
 
         return redirect()->route('users.index')->with('success', 'User Created Successfully');
     }
@@ -70,7 +75,9 @@ class UserController extends Controller
         } else {
             unset($validated['password']);
         }
-        $this->userService->update($id, $validated);
+        $user = $this->userService->update($id, $validated);
+
+        $this->logActivity('updated', 'User', $id, "Updated user \"{$user->name}\"");
 
         return redirect()->route('users.index')->with('success', 'User Updated Successfully.');
     }
@@ -80,13 +87,16 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
+        $user = $this->userService->findById($id);
         $this->userService->delete($id);
+
+        $this->logActivity('deleted', 'User', $id, "Deleted user \"{$user->name}\"");
 
         return redirect()->route('users.index')->with('success', 'User Deleted Successfully.');
     }
 
     /** Toggle user active/inactive status via AJAX. */
-    public function toggleStatus(string $id)
+    public function toggleStatus(Request $request, string $id)
     {
         $user = User::findOrFail($id);
         $user->status = $user->status == 1 ? 0 : 1;

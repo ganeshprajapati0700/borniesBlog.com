@@ -27,7 +27,7 @@
                 @yield('page-title', 'Dashboard')
             </h1>
             <p class="hidden sm:block text-[11px] text-slate-400 font-medium truncate leading-tight">
-                BorniesBlog Admin Panel
+                {{ App\Models\Setting::get('site_name', 'Site Name') }} Admin Panel
             </p>
         </div>
     </div>

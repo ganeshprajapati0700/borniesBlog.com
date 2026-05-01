@@ -8,10 +8,13 @@ use App\Models\Post;
 use App\Models\Tag;
 use App\Models\User;
 use App\Services\Interfaces\PostServiceInterface;
+use App\Traits\LogsActivity;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
+    use LogsActivity;
+
     protected $postService;
 
     public function __construct(PostServiceInterface $postService)
@@ -47,7 +50,9 @@ class PostController extends Controller
     {
         $this->authorize('create', Post::class);
 
-        $this->postService->create($request->validated());
+        $post = $this->postService->create($request->validated());
+
+        $this->logActivity('created', 'Post', $post->id, "Created post \"{$post->title}\"");
 
         return redirect()->route('posts.index')->with('success', 'Post created successfully.');
     }
@@ -74,6 +79,8 @@ class PostController extends Controller
 
         $this->postService->update($id, $request->validated());
 
+        $this->logActivity('updated', 'Post', $id, "Updated post \"{$post->title}\"");
+
         return redirect()->route('posts.index')->with('success', 'Post updated successfully.');
     }
 
@@ -84,6 +91,8 @@ class PostController extends Controller
         $this->authorize('delete', $post);
 
         $this->postService->delete($id);
+
+        $this->logActivity('deleted', 'Post', $id, "Deleted post \"{$post->title}\"");
 
         return redirect()->route('posts.index')->with('success', 'Post deleted successfully.');
     }

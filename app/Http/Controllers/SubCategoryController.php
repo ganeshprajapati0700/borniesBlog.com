@@ -87,7 +87,7 @@ class SubCategoryController extends Controller
     }
 
     /** Toggle sub-category active/inactive status via AJAX. */
-    public function toggleStatus(string $id)
+    public function toggleStatus(Request $request, string $id)
     {
         $sub = SubCategory::findOrFail($id);
         $sub->status = $sub->status == '1' ? '0' : '1';
@@ -102,8 +102,13 @@ class SubCategoryController extends Controller
     public function getByCategory(Request $request)
     {
         $categoryId = $request->query('category_id');
+
+        if (! $categoryId) {
+            return response()->json([]);
+        }
+
         $subcategories = SubCategory::where('category_id', $categoryId)
-            ->where('status', 1)
+            ->where('status', '1')
             ->get(['id', 'name']);
 
         return response()->json($subcategories);

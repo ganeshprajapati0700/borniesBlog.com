@@ -1,5 +1,5 @@
 <x-mail::message>
-# Welcome to BorniesBlog!
+# Welcome to {{ App\Models\Setting::get('site_name', 'Site Name') }}!
 
 Thanks for joining us. To get started and unlock all features of your account, we just need to verify your email address.
 

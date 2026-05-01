@@ -126,6 +126,34 @@
             <x-select-field label="Status" name="status" :options="[0 => 'Draft', 1 => 'Published']"
                 value="{{ old('status', 'draft') }}" required />
 
+            <!-- SEO & Social Media Settings (Collapsible) -->
+            <div class="border border-slate-200 rounded-lg overflow-hidden shadow-sm bg-slate-50">
+                <div class="px-4 py-3 bg-slate-100 border-b border-slate-200 flex justify-between items-center cursor-pointer" onclick="document.getElementById('seo-section').classList.toggle('hidden')">
+                    <h4 class="text-sm font-bold text-slate-700 uppercase tracking-wider">SEO & Social Media Settings</h4>
+                    <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                </div>
+                <div id="seo-section" class="p-4 space-y-6 hidden">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <x-input-field label="Meta Title" name="meta_title" placeholder="SEO Title" value="{{ old('meta_title') }}" />
+                        <x-input-field label="Meta Keywords" name="meta_keywords" placeholder="Keywords (comma separated)" value="{{ old('meta_keywords') }}" />
+                    </div>
+                    <div>
+                        <label for="meta_description" class="block text-sm font-medium text-slate-700 mb-2">Meta Description</label>
+                        <textarea name="meta_description" id="meta_description" rows="2" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors">{{ old('meta_description') }}</textarea>
+                    </div>
+                    <hr class="border-slate-200">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <x-input-field label="OG Title" name="og_title" placeholder="Open Graph Title" value="{{ old('og_title') }}" />
+                        <x-input-field label="OG Image URL" name="og_image" placeholder="Social share image URL" value="{{ old('og_image') }}" />
+                    </div>
+                    <div>
+                        <label for="og_description" class="block text-sm font-medium text-slate-700 mb-2">OG Description</label>
+                        <textarea name="og_description" id="og_description" rows="2" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors">{{ old('og_description') }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+
             <div>
                 <button type="submit"
                     class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition shadow-sm">
@@ -271,7 +299,7 @@
                 }
 
                 // Subcategory AJAX logic
-                const categorySelect = document.querySelector('select[name="category_id"]');
+                const categorySelect = document.getElementById('category_id');
                 const subCategorySelect = document.getElementById('sub_category_id');
 
                 if (categorySelect) {

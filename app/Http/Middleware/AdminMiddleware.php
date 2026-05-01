@@ -15,10 +15,10 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->check() && auth()->user()->is_admin == 1) {
+        if ($request->user() && $request->user()->is_admin == 1) {
             return $next($request);
         }
 
-        return redirect('/')->with('error', 'Access Denied! You are not a Admin');
+        return redirect()->back()->with('error', 'You have not access, you are not eligible for that action.');
     }
 }

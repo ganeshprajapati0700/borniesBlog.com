@@ -5,10 +5,10 @@
     <div class="h-[70px] flex items-center justify-between px-4 border-b border-white/[0.06] shrink-0 sidebar-brand-wrap">
         <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 min-w-0">
             <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shrink-0 shadow-lg shadow-indigo-900/40">
-                <img src="{{ asset('img/borniesLogo.webp') }}" alt="Logo" class="w-8 h-8 rounded-xl object-cover">
+                <img src="{{ App\Models\Setting::get('site_logo', asset('img/borniesLogo.webp')) }}" alt="Logo" class="w-8 h-8 rounded-xl object-cover">
             </div>
             <div class="sidebar-brand-text min-w-0 overflow-hidden">
-                <span class="font-black text-[15px] tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-300 via-indigo-300 to-purple-300 leading-none block whitespace-nowrap">BorniesBlog</span>
+                <span class="font-black text-[15px] tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-300 via-indigo-300 to-purple-300 leading-none block whitespace-nowrap">{{ App\Models\Setting::get('site_name', 'Site Name') }}</span>
                 <span class="text-[10px] text-slate-500 font-medium tracking-widest uppercase whitespace-nowrap">Admin Panel</span>
             </div>
         </a>
@@ -96,7 +96,31 @@
             </span>
             <span class="sidebar-label text-[13px] tracking-wide font-medium whitespace-nowrap overflow-hidden">Users</span>
         </a>
+        <a href="{{ route('settings.index') }}" data-tooltip="Settings"
+
+            class="sidebar-nav-link group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 mt-0.5 {{ request()->routeIs('settings.*') ? 'sidebar-link-active bg-indigo-500/10 text-indigo-400 font-semibold' : 'text-slate-400 hover:bg-white/[0.05] hover:text-slate-200' }}">
+            <span class="sidebar-icon-wrap flex items-center justify-center w-8 h-8 rounded-lg shrink-0 {{ request()->routeIs('settings.*') ? 'bg-indigo-500/20 text-indigo-400' : 'text-slate-500 group-hover:text-slate-300' }} transition-colors duration-200">
+                <svg width="17" height="17" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+            </span>
+            <span class="sidebar-label text-[13px] tracking-wide font-medium whitespace-nowrap overflow-hidden">Settings</span>
+        </a>
+        <a href="{{ route('activity-logs.index') }}" data-tooltip="Activity Logs"
+            class="sidebar-nav-link group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 mt-0.5 {{ request()->routeIs('activity-logs.*') ? 'sidebar-link-active bg-indigo-500/10 text-indigo-400 font-semibold' : 'text-slate-400 hover:bg-white/[0.05] hover:text-slate-200' }}">
+            <span class="sidebar-icon-wrap flex items-center justify-center w-8 h-8 rounded-lg shrink-0 {{ request()->routeIs('activity-logs.*') ? 'bg-indigo-500/20 text-indigo-400' : 'text-slate-500 group-hover:text-slate-300' }} transition-colors duration-200">
+                <svg width="17" height="17" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </span>
+            <span class="sidebar-label text-[13px] tracking-wide font-medium whitespace-nowrap overflow-hidden">Activity Logs</span>
+        </a>
         @endif
+
+
 
     </nav>
 

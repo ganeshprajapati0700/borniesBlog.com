@@ -12,10 +12,29 @@
         </div>
     @endif
 
-    <div class="mb-8">
-        <h2 class="text-2xl font-bold text-slate-800 tracking-tight">Welcome back, {{ auth()->user()->name ?? 'Admin' }} 👋</h2>
-        <p class="text-sm text-slate-400 mt-1">Here's what's happening with your blog today.</p>
+    <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+            <h2 class="text-2xl font-bold text-slate-800 tracking-tight">Welcome back, {{ auth()->user()->name ?? 'Admin' }} 👋</h2>
+            <p class="text-sm text-slate-400 mt-1">Here's what's happening with your blog today.</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+            <a href="{{ route('posts.create') }}" class="inline-flex items-center gap-2 px-3 py-2 bg-indigo-600 text-white text-xs font-bold uppercase tracking-wider rounded-lg hover:bg-indigo-700 transition shadow-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                New Post
+            </a>
+            <a href="{{ route('categories.create') }}" class="inline-flex items-center gap-2 px-3 py-2 bg-white text-slate-700 text-xs font-bold uppercase tracking-wider rounded-lg border border-slate-200 hover:bg-slate-50 transition shadow-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                Category
+            </a>
+            @if(auth()->user()->is_admin)
+            <a href="{{ route('users.index') }}" class="inline-flex items-center gap-2 px-3 py-2 bg-white text-slate-700 text-xs font-bold uppercase tracking-wider rounded-lg border border-slate-200 hover:bg-slate-50 transition shadow-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                Users
+            </a>
+            @endif
+        </div>
     </div>
+
 
     {{-- Primary Stats --}}
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">

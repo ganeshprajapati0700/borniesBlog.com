@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CategoryFormRequest;
 use App\Models\Category;
 use App\Services\Interfaces\CategoryServiceInterface;
+use App\Traits\LogsActivity;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
+    use LogsActivity;
+
     protected $categoryService;
 
     public function __construct(CategoryServiceInterface $categoryService)
@@ -40,7 +43,9 @@ class CategoryController extends Controller
      */
     public function store(CategoryFormRequest $request)
     {
-        $this->categoryService->createCategory($request->validated());
+        $category = $this->categoryService->createCategory($request->validated());
+
+        $this->logActivity('created', 'Category', $category->id, "Created category \"{$category->name}\"");
 
         return redirect()->route('categories.index')->with('success', 'Category created successfully.');
     }
@@ -60,7 +65,10 @@ class CategoryController extends Controller
      */
     public function update(CategoryFormRequest $request, string $id)
     {
-        $this->categoryService->updateCategory($id, $request->validated());
+        $category = $this->categoryService->getCategoryById($id);
+        $this->categoryService->updateCategory($category->id, $request->validated());
+
+        $this->logActivity('updated', 'Category', $category->id, "Updated category \"{$category->name}\"");
 
         return redirect()->route('categories.index')->with('success', 'Category updated successfully.');
     }
@@ -70,16 +78,19 @@ class CategoryController extends Controller
      */
     public function destroy(string $id)
     {
-        $this->categoryService->deleteCategory($id);
+        $category = $this->categoryService->getCategoryById($id);
+        $this->categoryService->deleteCategory($category->id);
+
+        $this->logActivity('deleted', 'Category', $category->id, "Deleted category \"{$category->name}\"");
 
         return redirect()->route('categories.index')->with('success', 'Category deleted successfully.');
     }
 
     /** Toggle category status via AJAX. */
-    public function toggleStatus(string $id)
+    public function toggleStatus(Request $request, string $id)
     {
         $category = Category::findOrFail($id);
-        if (auth()->user()->is_admin) {
+        if ($request->user() && $request->user()->is_admin) {
             $category->status = $category->status == 1 ? 0 : 1;
             $category->save();
 
@@ -92,7 +103,7 @@ class CategoryController extends Controller
     /** Handle bulk actions for categories */
     public function bulkAction(Request $request)
     {
-        if (! auth()->user()->is_admin) {
+        if (! $request->user() || ! $request->user()->is_admin) {
             return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
         }
 
@@ -126,7 +137,7 @@ class CategoryController extends Controller
     /** Quick Update (AJAX) for categories */
     public function quickUpdate(Request $request, $id)
     {
-        if (! auth()->user()->is_admin) {
+        if (! $request->user()->is_admin) {
             return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
         }
 

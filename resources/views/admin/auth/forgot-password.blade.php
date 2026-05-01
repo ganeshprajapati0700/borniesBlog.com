@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forgot Password | Bornies Blog</title>
+    <title>Forgot Password | {{ App\Models\Setting::get('site_name', 'Site Name') }}</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 <body class="h-full">
@@ -40,9 +40,9 @@
                     </div>
                     <div>
                         <p class="text-xs text-gray-500">Email</p>
-                        <a href="mailto:{{ config('mail.from.address', 'admin@borniesblog.com') }}"
+                        <a href="mailto:{{ App\Models\Setting::get('support_email', config('mail.from.address')) }}"
                             class="text-sm text-indigo-400 hover:text-indigo-300 font-medium transition-colors">
-                            {{ config('mail.from.address', 'admin@borniesblog.com') }}
+                            {{ App\Models\Setting::get('support_email', config('mail.from.address')) }}
                         </a>
                     </div>
                 </div>

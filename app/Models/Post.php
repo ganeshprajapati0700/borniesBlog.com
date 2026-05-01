@@ -30,11 +30,35 @@ class Post extends Model
 
     public function tags()
     {
-        return $this->belongsTo(Tag::class);
+        return $this->belongsToMany(Tag::class, 'assigned_tags');
     }
 
     public function assignedTag()
     {
         return $this->hasMany(AssignedTag::class);
+    }
+
+    /**
+     * Get the SEO Title, falling back to global settings.
+     */
+    public function getSeoTitleAttribute()
+    {
+        return $this->meta_title ?: $this->title;
+    }
+
+    /**
+     * Get the SEO Description, falling back to global settings.
+     */
+    public function getSeoDescriptionAttribute()
+    {
+        return $this->meta_description ?: Setting::get('default_meta_description');
+    }
+
+    /**
+     * Get the SEO Keywords, falling back to global settings.
+     */
+    public function getSeoKeywordsAttribute()
+    {
+        return $this->meta_keywords ?: Setting::get('default_meta_keywords');
     }
 }

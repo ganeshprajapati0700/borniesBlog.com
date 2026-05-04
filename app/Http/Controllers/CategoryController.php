@@ -90,7 +90,7 @@ class CategoryController extends Controller
     public function toggleStatus(Request $request, string $id)
     {
         $category = Category::findOrFail($id);
-        if ($request->user() && $request->user()->is_admin) {
+        if ($request->user() && ($request->user()->isAdmin() || $request->user()->isSuperAdmin())) {
             $category->status = $category->status == 1 ? 0 : 1;
             $category->save();
 
@@ -103,7 +103,7 @@ class CategoryController extends Controller
     /** Handle bulk actions for categories */
     public function bulkAction(Request $request)
     {
-        if (! $request->user() || ! $request->user()->is_admin) {
+        if (! $request->user() || ! ($request->user()->isAdmin() || $request->user()->isSuperAdmin())) {
             return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
         }
 
@@ -137,7 +137,7 @@ class CategoryController extends Controller
     /** Quick Update (AJAX) for categories */
     public function quickUpdate(Request $request, $id)
     {
-        if (! $request->user()->is_admin) {
+        if (! ($request->user()->isAdmin() || $request->user()->isSuperAdmin())) {
             return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
         }
 

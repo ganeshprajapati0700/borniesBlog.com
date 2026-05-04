@@ -12,7 +12,7 @@ class PostPolicy
      */
     public function before(User $user, string $ability): ?bool
     {
-        if ($user->is_admin) {
+        if ($user->isAdmin() || $user->isSuperAdmin()) {
             return true; // Admin can do anything
         }
 

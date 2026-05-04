@@ -27,7 +27,7 @@ class UserFormRequest extends FormRequest
             'email' => 'required|email|unique:users,email,'.$this->route('user'),
             'mobile' => 'required|numeric|digits:10',
             'status' => 'required|in:1,0',
-            'role' => 'required|in:1,0',
+            'role' => 'required|in:super_admin,admin,editor,author',
             'password' => [
                 'nullable',
                 'min:10',                  // must be at least 10 characters in length  \\

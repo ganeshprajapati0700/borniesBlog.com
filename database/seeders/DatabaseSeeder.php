@@ -27,7 +27,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@example.com',
             'password' => Hash::make('password'),
             'status' => 1,
-            'is_admin' => 1,
+            'role' => User::ROLE_SUPER_ADMIN,
         ]);
 
         // Create 10 regular users

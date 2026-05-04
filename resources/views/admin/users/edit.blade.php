@@ -28,8 +28,8 @@
                 value="{{ $user->email }}" required />
             <x-input-field label="User Mobile" type="tel" name="mobile" placeholder="9876543210" value="{{ $user->mobile }}"
                 required />
-            <x-select-field label="User Role" name="role" :options="['0' => 'User', '1' => 'Admin']"
-                value="{{ $user->is_admin }}" required />
+            <x-select-field label="User Role" name="role" :options="['super_admin' => 'Super Admin', 'admin' => 'Admin', 'editor' => 'Editor', 'author' => 'Author']"
+                value="{{ $user->role }}" required />
             <x-select-field label="Status" name="status" :options="['1' => 'Active', '0' => 'Inactive']"
                 value="{{ $user->status }}" required />
             <div class="space-y-4">

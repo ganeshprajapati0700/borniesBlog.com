@@ -85,7 +85,7 @@
 
         <p class="nav-section-label sidebar-section-label">Settings</p>
 
-        @if(auth()->user()->is_admin)
+        @if(auth()->user()->isAdmin() || auth()->user()->isSuperAdmin())
         <a href="{{ route('users.index') }}" data-tooltip="Users"
             class="sidebar-nav-link group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 mt-0.5 {{ request()->routeIs('users.*') ? 'sidebar-link-active bg-indigo-500/10 text-indigo-400 font-semibold' : 'text-slate-400 hover:bg-white/[0.05] hover:text-slate-200' }}">
             <span class="sidebar-icon-wrap flex items-center justify-center w-8 h-8 rounded-lg shrink-0 {{ request()->routeIs('users.*') ? 'bg-indigo-500/20 text-indigo-400' : 'text-slate-500 group-hover:text-slate-300' }} transition-colors duration-200">

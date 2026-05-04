@@ -50,7 +50,7 @@ class AuthService implements AuthServiceInterface
         // dd($data);
         $data['password'] = Hash::make($data['password']);
         $data['status'] = 1;
-        $data['is_admin'] = 1;
+        $data['role'] = \App\Models\User::ROLE_ADMIN;
         // dd($data);
         $user = $this->adminRepo->create($data);
         Auth::login($user);

@@ -12,6 +12,11 @@ class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
+    
+    public const ROLE_SUPER_ADMIN = 'super_admin';
+    public const ROLE_ADMIN = 'admin';
+    public const ROLE_EDITOR = 'editor';
+    public const ROLE_AUTHOR = 'author';
 
     /**
      * The attributes that are mass assignable.
@@ -24,7 +29,7 @@ class User extends Authenticatable
         'mobile',
         'password',
         'status',
-        'is_admin',
+        'role',
     ];
 
     /**
@@ -53,6 +58,26 @@ class User extends Authenticatable
     public function posts()
     {
         return $this->hasMany(Post::class);
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === self::ROLE_SUPER_ADMIN;
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === self::ROLE_ADMIN;
+    }
+
+    public function isEditor(): bool
+    {
+        return $this->role === self::ROLE_EDITOR;
+    }
+
+    public function isAuthor(): bool
+    {
+        return $this->role === self::ROLE_AUTHOR;
     }
 
     /**

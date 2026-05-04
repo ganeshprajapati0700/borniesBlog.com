@@ -19,7 +19,7 @@ class UserRepository implements UserRepositoryInterface
                 $query->where('status', $filters['status']);
             })
             ->when(isset($filters['role']) && $filters['role'] !== '', function ($query) use ($filters) {
-                $query->where('is_admin', $filters['role']);
+                $query->where('role', $filters['role']);
             })
             ->latest()
             ->paginate($perPage)
@@ -39,11 +39,6 @@ class UserRepository implements UserRepositoryInterface
 
     public function update(string $id, array $data)
     {
-        // dd($data);
-        // if (empty($data['role'])) {
-        $data['is_admin'] = $data['role'];
-        // }
-        // dd($data);
         $user = User::findOrFail($id);
         $user->update($data);
 

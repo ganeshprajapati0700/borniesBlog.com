@@ -14,7 +14,7 @@
 
     <x-search-filter action="{{ route('users.index') }}">
         <x-input-field label="Search User" name="search" placeholder="Search by name & email..." />
-        <x-select-field label="Role" name="role" :options="['' => 'All Roles', '1' => 'Admin', '0' => 'Editor']" />
+        <x-select-field label="Role" name="role" :options="['' => 'All Roles', 'super_admin' => 'Super Admin', 'admin' => 'Admin', 'editor' => 'Editor', 'author' => 'Author']" />
         <x-select-field label="Status" name="status" :options="['' => 'All Status', 1 => 'Active', 0 => 'Inactive']"
             :value="request('status')" />
     </x-search-filter>
@@ -40,8 +40,11 @@
                 <x-table-cell type="role">
                     <span
                         class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold
-                                {{ $user->is_admin ? 'bg-purple-50 text-purple-700 border border-purple-200' : 'bg-sky-50 text-sky-700 border border-sky-200' }}">
-                        {{ $user->is_admin ? 'Admin' : 'Editor' }}
+                                {{ $user->role === 'super_admin' ? 'bg-rose-50 text-rose-700 border border-rose-200' : 
+                                   ($user->role === 'admin' ? 'bg-purple-50 text-purple-700 border border-purple-200' : 
+                                   ($user->role === 'editor' ? 'bg-blue-50 text-blue-700 border border-blue-200' : 
+                                   'bg-slate-50 text-slate-700 border border-slate-200')) }}">
+                        {{ ucwords(str_replace('_', ' ', $user->role)) }}
                     </span>
                 </x-table-cell>
                 <x-table-cell type="status">

@@ -1,3 +1,6 @@
+@php
+    use App\Models\Setting;
+@endphp
 <!DOCTYPE html>
 <html lang="en" class="h-full bg-gray-900">
 
@@ -5,7 +8,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Login</title>
+    {{-- <title>Login</title> --}}
+        <title>{{'Login '. Setting::get('site_name', 'Site Name') }}</title>
+    <link rel="icon" type="image/x-icon" href="{{ Setting::get('site_favicon', asset('img/borniesLogo.webp')) }}">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
 </head>
